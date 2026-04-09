@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>TWR Stack Journal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1612;
+    --parchment: #f5f0e8;
+    --cream: #faf7f2;
+    --timber: #b5723a;
+    --timber-light: #e8d5bd;
+    --timber-dark: #7a4520;
+    --sage: #7a8c72;
+    --dust: #c8bfb0;
+    --red: #c44b2b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    padding-bottom: 100px;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--ink);
+    padding: 18px 20px 16px;
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .header-left { display: flex; flex-direction: column; }
+  .header-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px; color: var(--parchment);
+  }
+  .header-sub {
+    font-size: 10px; color: var(--dust);
+    letter-spacing: 0.12em; text-transform: uppercase; margin-top: 3px;
+  }
+  .add-btn {
+    background: var(--timber); color: white; border: none;
+    font-family: 'DM Sans', sans-serif; font-size: 22px;
+    width: 36px; height: 36px; border-radius: 50%;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    line-height: 1;
+  }
+
+  /* FILTERS */
+  .filter-row {
+    display: flex; gap: 8px; padding: 16px 16px 4px;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .filter-chip {
+    background: white; border: 1.5px solid var(--timber-light);
+    color: var(--ink); font-size: 12px; font-weight: 500;
+    padding: 5px 14px; border-radius: 20px; white-space: nowrap;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+  }
+  .filter-chip.active {
+    background: var(--ink); border-color: var(--ink); color: var(--parchment);
+  }
+
+  /* STATS */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 8px; padding: 16px 16px 8px;
+  }
+  .stat { background: white; border-radius: 10px; padding: 12px 10px; text-align: center; border: 1px solid var(--timber-light); }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--timber); line-height: 1; }
+  .stat-label { font-size: 9px; color: #999; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 3px; }
+
+  /* SECTION */
+  .section-label {
+    font-size: 10px; font-weight: 500; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--timber);
+    margin: 16px 16px 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--timber-light); }
+
+  /* CARDS */
+  .cards { padding: 0 16px; }
+  .card {
+    background: white; border-radius: 14px;
+    border: 1px solid var(--timber-light);
+    margin-bottom: 12px; overflow: hidden;
+    transition: transform 0.15s;
+  }
+  .card:active { transform: scale(0.98); }
+  .card-top {
+    padding: 14px 16px 10px;
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .card-icon {
+    width: 42px; height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+    background: var(--parchment);
+  }
+  .card-main { flex: 1; min-width: 0; }
+  .card-name {
+    font-family: 'Playfair Display', serif; font-size: 15px;
+    line-height: 1.2; margin-bottom: 3px;
+  }
+  .card-url {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--timber); white-space: nowrap; overflow: hidden;
+    text-overflow: ellipsis; text-decoration: none;
+    display: block;
+  }
+  .card-url:hover { text-decoration: underline; }
+  .status-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px;
+  }
+  .status-dot.active { background: var(--sage); }
+  .status-dot.setup { background: var(--timber); }
+  .status-dot.pending { background: var(--dust); }
+  .card-meta {
+    padding: 0 16px 12px;
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .meta-tag {
+    background: var(--parchment); color: var(--timber-dark);
+    font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: 500;
+  }
+  .card-creds {
+    border-top: 1px solid var(--parchment);
+    padding: 10px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .creds-info { font-size: 11px; color: #aaa; }
+  .creds-info span { color: var(--ink); font-weight: 500; }
+  .card-actions { display: flex; gap: 6px; }
+  .card-btn {
+    background: var(--parchment); border: none; border-radius: 8px;
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
+    padding: 6px 10px; cursor: pointer; color: var(--ink);
+    transition: background 0.15s;
+  }
+  .card-btn:active { background: var(--timber-light); }
+  .card-btn.danger { color: var(--red); }
+  .card-note {
+    border-top: 1px solid var(--parchment);
+    padding: 10px 16px; font-size: 12px; color: #777; line-height: 1.5;
+    font-style: italic;
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(26,22,18,0.6);
+    z-index: 200; display: none; align-items: flex-end;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white; border-radius: 20px 20px 0 0;
+    width: 100%; max-height: 90vh; overflow-y: auto;
+    padding: 20px 20px 40px;
+  }
+  .modal-handle {
+    width: 36px; height: 4px; background: var(--dust);
+    border-radius: 2px; margin: 0 auto 20px;
+  }
+  .modal-title {
+    font-family: 'Playfair Display', serif; font-size: 20px;
+    margin-bottom: 20px;
+  }
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block; font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: #999; margin-bottom: 6px;
+  }
+  .field input, .field select, .field textarea {
+    width: 100%; background: var(--cream); border: 1.5px solid var(--timber-light);
+    border-radius: 10px; padding: 11px 14px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink);
+    outline: none; transition: border-color 0.15s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--timber);
+  }
+  .field textarea { resize: vertical; min-height: 80px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .modal-save {
+    width: 100%; background: var(--ink); color: var(--parchment);
+    border: none; border-radius: 12px; padding: 14px;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
+    cursor: pointer; margin-top: 8px;
+  }
+  .modal-cancel {
+    width: 100%; background: none; border: none;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; color: #aaa;
+    cursor: pointer; margin-top: 10px; padding: 8px;
+  }
+
+  /* EMPTY */
+  .empty { text-align: center; padding: 60px 20px; color: #bbb; }
+  .empty-icon { font-size: 44px; margin-bottom: 12px; }
+  .empty-text { font-size: 14px; line-height: 1.6; }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 20px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink); color: var(--parchment);
+    font-size: 13px; padding: 10px 20px; border-radius: 20px;
+    opacity: 0; transition: all 0.3s; z-index: 500;
+    white-space: nowrap; pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* REVEAL CREDENTIAL */
+  .cred-hidden { letter-spacing: 0.15em; color: #ccc; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-title">Stack Journal</div>
+    <div class="header-sub">The Wattle Road · Infrastructure</div>
+  </div>
+  <button class="add-btn" onclick="openModal()">+</button>
+</div>
+
+<div class="filter-row">
+  <button class="filter-chip active" onclick="setFilter('all',this)">All</button>
+  <button class="filter-chip" onclick="setFilter('active',this)">Active</button>
+  <button class="filter-chip" onclick="setFilter('setup',this)">In Setup</button>
+  <button class="filter-chip" onclick="setFilter('pending',this)">Planned</button>
+  <button class="filter-chip" onclick="setFilter('infrastructure',this)">Infrastructure</button>
+  <button class="filter-chip" onclick="setFilter('marketing',this)">Marketing</button>
+  <button class="filter-chip" onclick="setFilter('commerce',this)">Commerce</button>
+  <button class="filter-chip" onclick="setFilter('design',this)">Design</button>
+</div>
+
+<div class="stats-row">
+  <div class="stat"><div class="stat-num" id="s-total">0</div><div class="stat-label">Total</div></div>
+  <div class="stat"><div class="stat-num" id="s-active">0</div><div class="stat-label">Active</div></div>
+  <div class="stat"><div class="stat-num" id="s-setup">0</div><div class="stat-label">In Setup</div></div>
+  <div class="stat"><div class="stat-num" id="s-cost">$0</div><div class="stat-label">Mo. Cost</div></div>
+</div>
+
+<div class="section-label" id="list-label">All Services</div>
+<div class="cards" id="card-list"></div>
+
+<!-- ADD / EDIT MODAL -->
+<div class="modal-overlay" id="modal" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-title">Add Service</div>
+
+    <div class="field">
+      <label>Service Name</label>
+      <input id="f-name" type="text" placeholder="e.g. Cloudflare">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Category</label>
+        <select id="f-cat">
+          <option value="infrastructure">Infrastructure</option>
+          <option value="marketing">Marketing</option>
+          <option value="commerce">Commerce</option>
+          <option value="design">Design</option>
+          <option value="productivity">Productivity</option>
+          <option value="analytics">Analytics</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Status</label>
+        <select id="f-status">
+          <option value="active">Active</option>
+          <option value="setup">In Setup</option>
+          <option value="pending">Pending</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>URL / Login Page</label>
+      <input id="f-url" type="url" placeholder="https://dash.cloudflare.com">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Login Email</label>
+        <input id="f-email" type="email" placeholder="dave@...">
+      </div>
+      <div class="field">
+        <label>Monthly Cost (AUD)</label>
+        <input id="f-cost" type="number" placeholder="0" min="0" step="0.01">
+      </div>
+    </div>
+    <div class="field">
+      <label>Icon (emoji)</label>
+      <input id="f-icon" type="text" placeholder="☁️" maxlength="4">
+    </div>
+    <div class="field">
+      <label>Notes / Purpose</label>
+      <textarea id="f-notes" placeholder="What this service does for TWR..."></textarea>
+    </div>
+
+    <input type="hidden" id="f-id">
+    <button class="modal-save" onclick="saveEntry()">Save</button>
+    <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── STORAGE ─────────────────────────────────────────────────────────────────
+function load() {
+  try { return JSON.parse(localStorage.getItem('twr-stack') || '[]'); }
+  catch { return []; }
+}
+function save(data) {
+  localStorage.setItem('twr-stack', JSON.stringify(data));
+}
+
+// ─── SEED DATA ───────────────────────────────────────────────────────────────
+const SEED = [
+  // ── INFRASTRUCTURE ──
+  { id: 'cloudflare', name: 'Cloudflare', category: 'infrastructure', status: 'active', url: 'https://dash.cloudflare.com', email: 'Thewattleroad@gmail.com', cost: 0, icon: '☁️', notes: 'NSW Planning Portal proxy live at twr-pipeline-proxy.thewattleroad.workers.dev. Free tier - 100k requests/day.' },
+  { id: 'github', name: 'GitHub', category: 'infrastructure', status: 'active', url: 'https://github.com/theprivfew', email: 'Thewattleroad@gmail.com', cost: 0, icon: '🐙', notes: 'Version control for TWR ecosystem. Org: theprivfew. Platform live at theprivfew.github.io/twr-platform' },
+  { id: 'twr-platform', name: 'TWR Platform', category: 'infrastructure', status: 'active', url: 'https://theprivfew.github.io/twr-platform/', email: 'Thewattleroad@gmail.com', cost: 0, icon: '🏛️', notes: 'Hosted on GitHub Pages (theprivfew org). Firebase Auth + Firestore. Admin login: thewattleroad@gmail.com. Role must be set to admin in Firestore users/{uid}.' },
+  // ── COMMERCE ──
+  { id: 'shopify', name: 'Shopify', category: 'commerce', status: 'active', url: 'https://admin.shopify.com', email: 'dave@thewattleroad.com.au', cost: 49, icon: '🛍️', notes: 'TWR storefront and product listings. Also hosts FCD enquiry landing page.' },
+  // ── MARKETING ──
+  { id: 'flodesk', name: 'Flodesk', category: 'marketing', status: 'active', url: 'https://app.flodesk.com', email: 'dave@thewattleroad.com.au', cost: 38, icon: '✉️', notes: 'Email marketing and forms. FCD Pipeline enquiry form: thewattleroad.myflodesk.com/fullcircledesign. Segment: FCD Pipeline Enquiries.' },
+  { id: 'instagram', name: 'Instagram', category: 'marketing', status: 'active', url: 'https://instagram.com/thewattleroad', email: 'dave@thewattleroad.com.au', cost: 0, icon: '📸', notes: 'Primary social channel for TWR. Product and project photography.' },
+  { id: 'facebook', name: 'Facebook', category: 'marketing', status: 'active', url: 'https://facebook.com/thewattleroad', email: 'dave@thewattleroad.com.au', cost: 0, icon: '👥', notes: 'TWR Facebook page.' },
+  { id: 'pinterest', name: 'Pinterest', category: 'marketing', status: 'active', url: 'https://pinterest.com.au/thewattleroad', email: 'dave@thewattleroad.com.au', cost: 0, icon: '📌', notes: 'Identified as biggest missed opportunity in digital audit. High intent audience for reclaimed timber.' },
+  { id: 'youtube', name: 'YouTube', category: 'marketing', status: 'active', url: 'https://youtube.com/@thewattleroad', email: 'dave@thewattleroad.com.au', cost: 0, icon: '▶️', notes: 'Barn Find series documenting timber sourcing from regional NSW. Content exists but remains unpublished.' },
+  // ── DESIGN ──
+  { id: 'canva', name: 'Canva', category: 'design', status: 'active', url: 'https://canva.com', email: 'dave@thewattleroad.com.au', cost: 20, icon: '🎨', notes: 'Design and marketing assets for TWR.' },
+  // ── PRODUCTIVITY ──
+  { id: 'gmail-twr', name: 'Gmail - TWR', category: 'productivity', status: 'active', url: 'https://mail.google.com', email: 'dave@thewattleroad.com.au', cost: 0, icon: '📧', notes: 'Primary business email. dave@thewattleroad.com.au' },
+  { id: 'gmail-personal', name: 'Gmail - Personal', category: 'productivity', status: 'active', url: 'https://mail.google.com', email: 'Thewattleroad@gmail.com', cost: 0, icon: '📬', notes: 'Personal/admin Gmail. Used for Cloudflare, GitHub logins.' },
+  // ── TWR DOMAINS ──
+  { id: 'twr-site', name: 'thewattleroad.com.au', category: 'infrastructure', status: 'active', url: 'https://thewattleroad.com.au', email: 'dave@thewattleroad.com.au', cost: 0, icon: '🌐', notes: 'Main TWR website on Shopify.' },
+  { id: 'twr-proxy', name: 'Pipeline Proxy', category: 'infrastructure', status: 'active', url: 'https://twr-pipeline-proxy.thewattleroad.workers.dev', email: '', cost: 0, icon: '🔌', notes: 'Live Cloudflare Worker proxying NSW Planning Portal API.' },
+  { id: 'twr-flodesk-form', name: 'FCD Enquiry Form', category: 'marketing', status: 'active', url: 'https://thewattleroad.myflodesk.com/fullcircledesign', email: '', cost: 0, icon: '📋', notes: 'Flodesk hosted form for FCD Pipeline homeowner enquiries. Linked from pamphlet QR code.' },
+  // ── GOOGLE DOCS / FORMS ──
+  { id: 'fcd-sheet', name: 'FCD Google Sheet', category: 'productivity', status: 'active', url: 'https://docs.google.com/spreadsheets/d/1F0O2odt7rwaeGwiNiIqF4nFJaAbrlrib0dB_edhCY8I/edit', email: 'Thewattleroad@gmail.com', cost: 0, icon: '📊', notes: 'Previous FCD client intake spreadsheet. Legacy data source - now being replaced by Flodesk + Pipeline.' },
+  { id: 'fcd-form', name: 'FCD Google Form', category: 'productivity', status: 'active', url: 'https://docs.google.com/forms/d/1wAVRzvRoe6VixrgHCmyeKrSeq2xllcG1S_M_blXFnic/edit', email: 'Thewattleroad@gmail.com', cost: 0, icon: '📝', notes: 'Previous FCD enquiry Google Form. Legacy - being replaced by Flodesk form.' },
+  // ── FUTURE PLATFORMS (placeholders) ──
+  { id: 'material-library', name: 'Material Library', category: 'infrastructure', status: 'pending', url: '', email: '', cost: 0, icon: '🪵', notes: 'Planned - salvaged material catalogue and marketplace. Domain TBD.' },
+  { id: 'makers-platform', name: 'Makers Platform', category: 'infrastructure', status: 'pending', url: '', email: '', cost: 0, icon: '🔨', notes: 'Planned - education, templates, FCD certification for makers. Domain TBD.' },
+  { id: 'fcd-story-platform', name: 'FCD Story Platform', category: 'infrastructure', status: 'pending', url: '', email: '', cost: 0, icon: '📖', notes: 'Planned - provenance records and credentialing layer. Domain TBD.' },
+  { id: 'material-story-platform', name: 'Material Story Platform', category: 'infrastructure', status: 'pending', url: '', email: '', cost: 0, icon: '🎬', notes: 'Planned - long-form content for ABC, SBS, editorial media. Domain TBD.' },
+];
+
+function initSeed() {
+  const existing = load();
+  const existingIds = existing.map(d => d.id);
+  const merged = [...existing];
+  SEED.forEach(s => {
+    if (!existingIds.includes(s.id)) merged.push(s);
+    else {
+      // Update seed entries with latest data
+      const idx = merged.findIndex(d => d.id === s.id);
+      merged[idx] = { ...s, ...merged[idx], notes: s.notes }; // preserve user edits but refresh notes
+    }
+  });
+  save(merged);
+}
+
+// ─── FILTER ───────────────────────────────────────────────────────────────────
+let currentFilter = 'all';
+function setFilter(f, el) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+const STATUS_LABEL = { active: 'Active', setup: 'In Setup', pending: 'Pending' };
+const CAT_LABEL = {
+  infrastructure: 'Infrastructure', marketing: 'Marketing', commerce: 'Commerce',
+  design: 'Design', productivity: 'Productivity', analytics: 'Analytics', other: 'Other'
+};
+
+function render() {
+  const data = load();
+  const filtered = currentFilter === 'all'
+    ? data
+    : data.filter(d => d.status === currentFilter || d.category === currentFilter);
+
+  // Stats
+  document.getElementById('s-total').textContent = data.length;
+  document.getElementById('s-active').textContent = data.filter(d => d.status === 'active').length;
+  document.getElementById('s-setup').textContent = data.filter(d => d.status === 'setup').length;
+  const cost = data.reduce((s, d) => s + (parseFloat(d.cost) || 0), 0);
+  document.getElementById('s-cost').textContent = '$' + cost.toFixed(0);
+
+  document.getElementById('list-label').textContent =
+    currentFilter === 'all' ? 'All Services' : (CAT_LABEL[currentFilter] || STATUS_LABEL[currentFilter] || currentFilter);
+
+  const list = document.getElementById('card-list');
+  if (!filtered.length) {
+    list.innerHTML = `<div class="empty"><div class="empty-icon">🗂️</div><div class="empty-text">No services here yet.<br>Tap + to add one.</div></div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(d => `
+    <div class="card">
+      <div class="card-top">
+        <div class="card-icon">${d.icon || '🔧'}</div>
+        <div class="card-main">
+          <div class="card-name">${d.name}</div>
+          ${d.url ? `<a class="card-url" href="${d.url}" target="_blank">${d.url.replace('https://','')}</a>` : ''}
+        </div>
+        <div class="status-dot ${d.status}" title="${STATUS_LABEL[d.status]}"></div>
+      </div>
+      <div class="card-meta">
+        <span class="meta-tag">${CAT_LABEL[d.category] || d.category}</span>
+        <span class="meta-tag">${STATUS_LABEL[d.status]}</span>
+        ${d.cost > 0 ? `<span class="meta-tag">$${parseFloat(d.cost).toFixed(0)}/mo</span>` : `<span class="meta-tag">Free</span>`}
+      </div>
+      ${d.notes ? `<div class="card-note">${d.notes}</div>` : ''}
+      <div class="card-creds">
+        <div class="creds-info">${d.email ? `<span>${d.email}</span>` : '<span style="color:#ccc">No email saved</span>'}</div>
+        <div class="card-actions">
+          ${d.url ? `<button class="card-btn" onclick="window.open('${d.url}','_blank')">↗ Open</button>` : ''}
+          <button class="card-btn" onclick="editEntry('${d.id}')">Edit</button>
+          <button class="card-btn danger" onclick="deleteEntry('${d.id}')">✕</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─── MODAL ────────────────────────────────────────────────────────────────────
+function openModal(entry) {
+  document.getElementById('modal-title').textContent = entry ? 'Edit Service' : 'Add Service';
+  document.getElementById('f-id').value = entry ? entry.id : '';
+  document.getElementById('f-name').value = entry ? entry.name : '';
+  document.getElementById('f-cat').value = entry ? entry.category : 'infrastructure';
+  document.getElementById('f-status').value = entry ? entry.status : 'active';
+  document.getElementById('f-url').value = entry ? entry.url : '';
+  document.getElementById('f-email').value = entry ? entry.email : '';
+  document.getElementById('f-cost').value = entry ? entry.cost : '';
+  document.getElementById('f-icon').value = entry ? entry.icon : '';
+  document.getElementById('f-notes').value = entry ? entry.notes : '';
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modal')) closeModal();
+}
+function editEntry(id) {
+  const entry = load().find(d => d.id === id);
+  if (entry) openModal(entry);
+}
+function deleteEntry(id) {
+  if (!confirm('Remove this service?')) return;
+  const data = load().filter(d => d.id !== id);
+  save(data); render(); showToast('Removed');
+}
+function saveEntry() {
+  const data = load();
+  const id = document.getElementById('f-id').value || Date.now().toString(36);
+  const entry = {
+    id,
+    name: document.getElementById('f-name').value.trim(),
+    category: document.getElementById('f-cat').value,
+    status: document.getElementById('f-status').value,
+    url: document.getElementById('f-url').value.trim(),
+    email: document.getElementById('f-email').value.trim(),
+    cost: parseFloat(document.getElementById('f-cost').value) || 0,
+    icon: document.getElementById('f-icon').value.trim() || '🔧',
+    notes: document.getElementById('f-notes').value.trim(),
+  };
+  if (!entry.name) { showToast('Please enter a name'); return; }
+  const idx = data.findIndex(d => d.id === id);
+  if (idx >= 0) data[idx] = entry; else data.push(entry);
+  save(data); closeModal(); render();
+  showToast(idx >= 0 ? 'Updated' : 'Added');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+initSeed();
+render();
+</script>
+</body>
+</html>

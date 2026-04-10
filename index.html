@@ -4,46 +4,35 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>TWR Stack Journal</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" onerror="this.remove()">
 <style>
   :root {
-    --ink: #1a1612;
-    --parchment: #f5f0e8;
-    --cream: #faf7f2;
-    --timber: #b5723a;
-    --timber-light: #e8d5bd;
-    --timber-dark: #7a4520;
-    --sage: #7a8c72;
-    --dust: #c8bfb0;
-    --red: #c44b2b;
+    --ink: #1A1410;
+    --off-white: #FAF9F7;
+    --off-white: #FAF9F7;
+    --forge: #C4530A;
+    --rule: #E5E0D8;
+    --forge-deep: #9A3D06;
+    --sand: #C9B99A;
+    --sand: #C9B99A;
+    --red: #C4530A;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
+    background:var(--white);
     color: var(--ink);
     min-height: 100vh;
     padding-bottom: 100px;
   }
 
   /* HEADER */
-  .header {
-    background: var(--ink);
-    padding: 18px 20px 16px;
-    position: sticky; top: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .header-left { display: flex; flex-direction: column; }
-  .header-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 18px; color: var(--parchment);
-  }
-  .header-sub {
-    font-size: 10px; color: var(--dust);
-    letter-spacing: 0.12em; text-transform: uppercase; margin-top: 3px;
-  }
+  
+  
+  
+  
   .add-btn {
-    background: var(--timber); color: white; border: none;
+    background: var(--forge); color: white; border: none;
     font-family: 'DM Sans', sans-serif; font-size: 22px;
     width: 36px; height: 36px; border-radius: 50%;
     cursor: pointer; display: flex; align-items: center; justify-content: center;
@@ -56,14 +45,14 @@
     overflow-x: auto; scrollbar-width: none;
   }
   .filter-chip {
-    background: white; border: 1.5px solid var(--timber-light);
+    background: white; border: 1.5px solid var(--rule);
     color: var(--ink); font-size: 12px; font-weight: 500;
     padding: 5px 14px; border-radius: 20px; white-space: nowrap;
     cursor: pointer; font-family: 'DM Sans', sans-serif;
     transition: all 0.15s;
   }
   .filter-chip.active {
-    background: var(--ink); border-color: var(--ink); color: var(--parchment);
+    background: var(--ink,#1A1410); border-color: var(--ink); color: var(--off-white);
   }
 
   /* STATS */
@@ -71,24 +60,24 @@
     display: grid; grid-template-columns: repeat(4, 1fr);
     gap: 8px; padding: 16px 16px 8px;
   }
-  .stat { background: white; border-radius: 10px; padding: 12px 10px; text-align: center; border: 1px solid var(--timber-light); }
-  .stat-num { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--timber); line-height: 1; }
+  .stat { background: white; border-radius: 10px; padding: 12px 10px; text-align: center; border: 1px solid var(--rule); }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--forge); line-height: 1; }
   .stat-label { font-size: 9px; color: #999; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 3px; }
 
   /* SECTION */
   .section-label {
     font-size: 10px; font-weight: 500; letter-spacing: 0.14em;
-    text-transform: uppercase; color: var(--timber);
+    text-transform: uppercase; color: var(--forge);
     margin: 16px 16px 10px;
     display: flex; align-items: center; gap: 8px;
   }
-  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--timber-light); }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
 
   /* CARDS */
   .cards { padding: 0 16px; }
   .card {
     background: white; border-radius: 14px;
-    border: 1px solid var(--timber-light);
+    border: 1px solid var(--rule);
     margin-bottom: 12px; overflow: hidden;
     transition: transform 0.15s;
   }
@@ -101,7 +90,7 @@
     width: 42px; height: 42px; border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
     font-size: 20px; flex-shrink: 0;
-    background: var(--parchment);
+    background: var(--off-white);
   }
   .card-main { flex: 1; min-width: 0; }
   .card-name {
@@ -110,7 +99,7 @@
   }
   .card-url {
     font-family: 'DM Mono', monospace; font-size: 11px;
-    color: var(--timber); white-space: nowrap; overflow: hidden;
+    color: var(--forge); white-space: nowrap; overflow: hidden;
     text-overflow: ellipsis; text-decoration: none;
     display: block;
   }
@@ -118,19 +107,19 @@
   .status-dot {
     width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px;
   }
-  .status-dot.active { background: var(--sage); }
-  .status-dot.setup { background: var(--timber); }
-  .status-dot.pending { background: var(--dust); }
+  .status-dot.active { background: var(--sand); }
+  .status-dot.setup { background: var(--forge); }
+  .status-dot.pending { background: var(--sand); }
   .card-meta {
     padding: 0 16px 12px;
     display: flex; flex-wrap: wrap; gap: 6px;
   }
   .meta-tag {
-    background: var(--parchment); color: var(--timber-dark);
+    background: var(--off-white); color: var(--forge-deep);
     font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: 500;
   }
   .card-creds {
-    border-top: 1px solid var(--parchment);
+    border-top: 1px solid var(--off-white);
     padding: 10px 16px;
     display: flex; align-items: center; justify-content: space-between;
   }
@@ -138,15 +127,15 @@
   .creds-info span { color: var(--ink); font-weight: 500; }
   .card-actions { display: flex; gap: 6px; }
   .card-btn {
-    background: var(--parchment); border: none; border-radius: 8px;
+    background: var(--off-white); border: none; border-radius: 8px;
     font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
     padding: 6px 10px; cursor: pointer; color: var(--ink);
     transition: background 0.15s;
   }
-  .card-btn:active { background: var(--timber-light); }
+  .card-btn:active { background: var(--rule); }
   .card-btn.danger { color: var(--red); }
   .card-note {
-    border-top: 1px solid var(--parchment);
+    border-top: 1px solid var(--off-white);
     padding: 10px 16px; font-size: 12px; color: #777; line-height: 1.5;
     font-style: italic;
   }
@@ -163,7 +152,7 @@
     padding: 20px 20px 40px;
   }
   .modal-handle {
-    width: 36px; height: 4px; background: var(--dust);
+    width: 36px; height: 4px; background: var(--sand);
     border-radius: 2px; margin: 0 auto 20px;
   }
   .modal-title {
@@ -177,18 +166,18 @@
     color: #999; margin-bottom: 6px;
   }
   .field input, .field select, .field textarea {
-    width: 100%; background: var(--cream); border: 1.5px solid var(--timber-light);
+    width: 100%; background: var(--off-white); border: 1.5px solid var(--rule);
     border-radius: 10px; padding: 11px 14px;
     font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink);
     outline: none; transition: border-color 0.15s;
   }
   .field input:focus, .field select:focus, .field textarea:focus {
-    border-color: var(--timber);
+    border-color: var(--forge);
   }
   .field textarea { resize: vertical; min-height: 80px; }
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .modal-save {
-    width: 100%; background: var(--ink); color: var(--parchment);
+    width: 100%; background: var(--ink,#1A1410); color: var(--off-white);
     border: none; border-radius: 12px; padding: 14px;
     font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
     cursor: pointer; margin-top: 8px;
@@ -208,7 +197,7 @@
   .toast {
     position: fixed; bottom: 20px; left: 50%;
     transform: translateX(-50%) translateY(20px);
-    background: var(--ink); color: var(--parchment);
+    background: var(--ink,#1A1410); color: var(--off-white);
     font-size: 13px; padding: 10px 20px; border-radius: 20px;
     opacity: 0; transition: all 0.3s; z-index: 500;
     white-space: nowrap; pointer-events: none;
@@ -217,13 +206,31 @@
 
   /* REVEAL CREDENTIAL */
   .cred-hidden { letter-spacing: 0.15em; color: #ccc; }
+.hdr{background:#FFFFFF;border-bottom:1px solid #E5E0D8;padding:1.2rem 1.5rem;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between}
+.hdr-mark{display:flex;flex-direction:column;gap:1px}
+.hdr-the{font-family:'DM Sans',-apple-system,sans-serif;font-size:9px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:#C4530A;line-height:1}
+.hdr-name{font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;font-weight:400;letter-spacing:.1em;text-transform:uppercase;color:#1A1410;line-height:1}
+.hdr-sub{font-size:10px;font-weight:400;letter-spacing:.12em;text-transform:uppercase;color:#C9B99A}
+
+.header{background:#FFFFFF;border-bottom:1px solid #E5E0D8;padding:1.2rem 1.5rem;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between}
+.header-mark{display:flex;flex-direction:column;gap:1px}
+.header-the{font-family:'DM Sans',-apple-system,sans-serif;font-size:9px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#C4530A;line-height:1}
+.header-name{font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;font-weight:400;letter-spacing:.1em;text-transform:uppercase;color:#1A1410;line-height:1}
+.header-sub{font-size:10px;font-weight:400;letter-spacing:.12em;text-transform:uppercase;color:#C9B99A;font-family:'DM Sans',-apple-system,sans-serif}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-left">
-    <div class="header-title">Stack Journal</div>
+  <div class="header-mark">
+    <span class="header-the">The</span>
+    <span class="header-name">Wattle Road</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <span class="header-sub">Stack Journal</span>
+    <button class="add-btn" onclick="openModal(null)">+</button>
+  </div>
+</div>
     <div class="header-sub">The Wattle Road · Infrastructure</div>
   </div>
   <button class="add-btn" onclick="openModal()">+</button>
@@ -327,8 +334,7 @@ function save(data) {
 const SEED = [
   // ── INFRASTRUCTURE ──
   { id: 'cloudflare', name: 'Cloudflare', category: 'infrastructure', status: 'active', url: 'https://dash.cloudflare.com', email: 'Thewattleroad@gmail.com', cost: 0, icon: '☁️', notes: 'NSW Planning Portal proxy live at twr-pipeline-proxy.thewattleroad.workers.dev. Free tier - 100k requests/day.' },
-  { id: 'github', name: 'GitHub', category: 'infrastructure', status: 'active', url: 'https://github.com/theprivfew', email: 'Thewattleroad@gmail.com', cost: 0, icon: '🐙', notes: 'Version control for TWR ecosystem. Org: theprivfew. Platform live at theprivfew.github.io/twr-platform' },
-  { id: 'twr-platform', name: 'TWR Platform', category: 'infrastructure', status: 'active', url: 'https://theprivfew.github.io/twr-platform/', email: 'Thewattleroad@gmail.com', cost: 0, icon: '🏛️', notes: 'Hosted on GitHub Pages (theprivfew org). Firebase Auth + Firestore. Admin login: thewattleroad@gmail.com. Role must be set to admin in Firestore users/{uid}.' },
+  { id: 'github', name: 'GitHub', category: 'infrastructure', status: 'setup', url: 'https://github.com', email: 'Thewattleroad@gmail.com', cost: 0, icon: '🐙', notes: 'Version control for TWR ecosystem code - pipeline app, proxy worker, and future platform builds.' },
   // ── COMMERCE ──
   { id: 'shopify', name: 'Shopify', category: 'commerce', status: 'active', url: 'https://admin.shopify.com', email: 'dave@thewattleroad.com.au', cost: 49, icon: '🛍️', notes: 'TWR storefront and product listings. Also hosts FCD enquiry landing page.' },
   // ── MARKETING ──
